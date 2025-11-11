@@ -3,146 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เว็บไซต์สาธิต Core Web Vitals Tracker</title>
+    <title>KPI Metrics Dashboard</title>
+    
+    <script>
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    </script>
     
     <script src="https://unpkg.com/web-vitals@3/dist/web-vitals.attribution.iife.js"></script>
 
     <script>
-        // กำหนด Endpoint ของ Server ที่ใช้รับข้อมูล
         const METRICS_ENDPOINT = 'https://your-metrics-server.com/api/collect';
 
-        /**
-         * ฟังก์ชันสำหรับส่งข้อมูลเมตริกไปยัง Server
-         * @param {Object} data ข้อมูลเมตริกที่จะส่ง
-         */
         function sendMetric(data) {
-            // เพิ่มข้อมูลบริบท (Context)
             const metricData = {
                 ...data,
                 page: window.location.pathname,
-                device: navigator.userAgent,
                 timestamp: new Date().toISOString()
             };
 
-            // แสดงข้อมูลใน Console เพื่อดูผลลัพธ์การเก็บก่อนส่งจริง
-            console.log('Metrics Collected and Ready to Send:', metricData);
-
-            // ใช้ sendBeacon เพื่อส่งข้อมูลอย่างมีประสิทธิภาพเมื่อผู้ใช้กำลังจะปิดหน้า
-            try {
-                const blob = new Blob([JSON.stringify(metricData)], { type: 'application/json' });
-                const sent = navigator.sendBeacon(METRICS_ENDPOINT, blob);
-                
-                // ตรวจสอบว่าส่งสำเร็จหรือไม่ (sendBeacon จะคืนค่า true หากเบราว์เซอร์เริ่มดำเนินการส่ง)
-                if (sent) {
-                    console.log(`[${data.name}] Data transmission initiated via sendBeacon.`);
-                } else {
-                    console.warn(`[${data.name}] sendBeacon failed or was not available. Fallback to fetch.`);
-                    
-                    // Fallback to fetch (อาจล้มเหลวถ้าผู้ใช้ปิดหน้าเร็ว)
-                    fetch(METRICS_ENDPOINT, {
-                        method: 'POST',
-                        body: blob,
-                        keepalive: true // สำคัญ: ช่วยให้ Request ส่งเสร็จแม้ผู้ใช้จะปิดหน้า
-                    });
-                }
-
-            } catch (error) {
-                console.error(`[${data.name}] Error during metrics transmission:`, error);
+            console.log('Sending Metric:', metricData);
+            
+            const resultElement = document.getElementById('trackingResults');
+            if (resultElement) {
+                resultElement.innerHTML += `<li>**${data.name}** Value: ${data.value.toFixed(2)} (${data.rating})</li>`;
             }
         }
-
-        // 3. เริ่มต้นการเก็บ Core Web Vitals
         
-        // LCP (Largest Contentful Paint)
-        getLCP(metric => {
-            // LCP จะถูกรายงานครั้งเดียวเมื่อโหลดเสร็จสมบูรณ์
-            sendMetric({
-                name: metric.name,
-                value: metric.value,
-                rating: metric.rating,
-                // element: metric.entries[0]?.element.tagName || 'N/A' // สามารถเก็บ element ที่เป็น LCP ได้
-            });
-        });
+        // เริ่มต้นการเก็บ Core Web Vitals
+        if (typeof getLCP === 'function') getLCP(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
+        if (typeof getCLS === 'function') getCLS(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
+        if (typeof getINP === 'function') getINP(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
 
-        // CLS (Cumulative Layout Shift)
-        getCLS(metric => {
-            // CLS จะถูกรายงานครั้งสุดท้ายเมื่อหน้าเว็บถูก unload
-            sendMetric({
-                name: metric.name,
-                value: metric.value,
-                rating: metric.rating
-            });
-        });
-
-        // INP (Interaction to Next Paint)
-        getINP(metric => {
-            // INP จะถูกรายงานครั้งสุดท้ายเมื่อหน้าเว็บถูก unload
-            sendMetric({
-                name: metric.name,
-                value: metric.value,
-                rating: metric.rating
-            });
-        });
-
-        // FCP (First Contentful Paint) - เมตริกเสริม
-        getFCP(metric => {
-            sendMetric({
-                name: metric.name,
-                value: metric.value,
-                rating: metric.rating
-            });
-        });
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
     </script>
 
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .hero { 
-            width: 100%; 
-            height: 300px; 
-            background-color: #f0f0f0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 2em; 
+        body { font-family: Tahoma, Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+        
+        /* สไตล์สำหรับส่วนหัวตามภาพ Screenshot */
+        .title-bar {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
         }
-        .content { margin-top: 20px; padding: 15px; border: 1px solid #ccc; }
-        .ad { 
-            width: 300px; 
-            height: 100px; 
-            background-color: #ffcccc; 
-            margin-bottom: 10px; 
-            /* ตัวอย่างการทำให้เกิด CLS: โหลด Ad ช้าๆ */
-            display: none; 
+
+        /* สไตล์สำหรับ KPI-Dashboard Box สีฟ้า */
+        .dashboard-box {
+            background-color: #e0f7ff; /* สีฟ้าอ่อน */
+            border: 1px solid #b3e5fc; /* ขอบสีฟ้า */
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .dashboard-box h2 {
+            font-size: 3em;
+            color: #0277bd; /* สีน้ำเงินเข้ม */
+            font-weight: 600;
+        }
+        
+        /* สไตล์สำหรับข้อมูลเนื้อหาด้านล่าง */
+        .content-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .logout-btn { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px;
+            padding: 10px 15px; 
+            background-color: #dc3545; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    
-   <div class="header">
-        <h1>กลุ่มภาระกิจด้านการพยาบาล โรงพยาบาลชลบุรี</h1>
 
+    <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+
+    <div class="container">
+        
+        <div class="title-bar">
+            กลุ่มภาระกิจด้านการพยาบาล โรงพยาบาลชลบุรี
+        </div>
+
+        <div class="dashboard-box">
+            <h2>KPI-Dashboard</h2>
+        </div>
+
+        <div class="content-section">
+            <p>ยินดีต้อนรับ, หน้าแสดงการเฝ้าระวังตัวชี้วัด</p>
+            <hr>
+            
+            <h3>ตัวอย่างการเก็บ Core Web Vitals (CWV)</h3>
+            <p>นี่คือเนื้อหาหลักของหน้าเว็บ...</p>
+            <button onclick="console.log('User interacted');" style="padding: 10px;">คลิกเพื่อสร้าง Interaction (INP)</button>
+            <p>เลื่อนหน้าลงมาเพื่อดูการทำงานของ Tracker ใน Console</p>
+            
+            <div style="height: 10px;"></div>
+
+            <h4>ผลลัพธ์การเก็บ CWV (จำลอง)</h4>
+            <ul id="trackingResults">
+                <li>(LCP/FCP จะแสดงหลังโหลด, INP/CLS จะแสดงเมื่อออกจากหน้า)</li>
+            </ul>
+        </div>
+        
     </div>
-    
-    <div class="hero" style="
-        background-color: #f0f8ff; 
-        padding: 20px; 
-        margin-bottom: 20px; 
-        border-radius: 8px;
-        text-align: center;
-        border-left: 5px solid #007bff;
-    ">
-        <h1 style="color: #007bff; margin-bottom: 3px;">KPI-Dashboard</h1>
-        <p style="color: #333; font-size: 1.1em; margin-top: 0;">
-    </div>
-    <p>ยินดีต้อนรับ, หน้าแสดงการลงตัวชี้วัด</p>
-
-
-    <div id="content-area" class="content">
-        <p>นี่คือเนื้อหาหลักของหน้าเว็บ...</p>
-        <button onclick="console.log('User interacted');">คลิกเพื่อสร้าง Interaction (INP)</button>
-        <p>เลื่อนหน้าลงมาเพื่อดูการทำงานของ Tracker ใน Console</p>
-        <div style="height: 300px;"></div>
-    </div>
-
 </body>
 </html>
