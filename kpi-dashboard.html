@@ -5,132 +5,159 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KPI Metrics Dashboard</title>
     
+    <!-- ตรวจสอบการ Login ก่อนแสดงหน้า -->
     <script>
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
             window.location.href = 'index.html';
         }
     </script>
     
+    <!-- 1. โหลดไลบรารี web-vitals จาก CDN -->
     <script src="https://unpkg.com/web-vitals@3/dist/web-vitals.attribution.iife.js"></script>
 
     <script>
-        const METRICS_ENDPOINT = 'https://your-metrics-server.com/api/collect';
-
-        function sendMetric(data) {
-            const metricData = {
-                ...data,
-                page: window.location.pathname,
-                timestamp: new Date().toISOString()
-            };
-
-            console.log('Sending Metric:', metricData);
-            
-            const resultElement = document.getElementById('trackingResults');
-            if (resultElement) {
-                resultElement.innerHTML += `<li>**${data.name}** Value: ${data.value.toFixed(2)} (${data.rating})</li>`;
-            }
-        }
+        // ******************************************************************
+        // 1. GLOBAL VARIABLES & CONFIG
+        // ******************************************************************
         
-        // เริ่มต้นการเก็บ Core Web Vitals
-        if (typeof getLCP === 'function') getLCP(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
-        if (typeof getCLS === 'function') getCLS(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
-        if (typeof getINP === 'function') getINP(metric => sendMetric({ name: metric.name, value: metric.value, rating: metric.rating }));
+        // 1.1. Google Apps Script Web App URL
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyiAaOAweu3SJz7GiLCserf1cuJ-pvMcrITY-mdiCyBbuHObabbQiDp7JyAcmVlId3_Sw/exec'; 
 
-        function logout() {
-            sessionStorage.removeItem('isLoggedIn');
-            window.location.href = 'index.html';
-        }
-
-        
-// **1. วาง Web App URL ที่คุณได้ Deploy มาแทนที่ลิงก์นี้**
-    const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyiAaOAweu3SJz7GiLCserf1cuJ-pvMcrITY-mdiCyBbuHObabbQiDp7JyAcmVlId3_Sw/exec'; 
-
-    function logout() {
-        sessionStorage.removeItem('isLoggedIn');
-        window.location.href = 'index.html';
-    }
-
-    /**
-     * ฟังก์ชันสำหรับรวบรวมและส่งข้อมูล 30 ตัวชี้วัดไปยัง Google Sheets
-     */
-    function sendKPIsToSheets() {
-        // **A. รวบรวมข้อมูลตัวชี้วัด 30 ตัว**
+        // 1.2. KPI Data Object (ต้องเป็น Global เพื่อให้ CWV Handlers อัปเดตได้)
         const kpiData = {
             // ข้อมูลบริบท
             'Page': window.location.pathname,
             'Device': navigator.userAgent,
             
             // **ตัวชี้วัด KPI 30 ตัวของคุณ (ต้องตรงกับ Header ใน Google Sheet)**
-            'KPI_1': Math.floor(Math.random() * 100), // ตัวอย่าง: Random Value
+            'KPI_1': Math.floor(Math.random() * 100), 
             'KPI_2': 'A-OK',
             'KPI_3': 15.5,
-            // ...
+            'KPI_4': 40,
+            'KPI_5': 25,
+            'KPI_6': 78,
+            'KPI_7': 12,
+            'KPI_8': 33.3,
+            'KPI_9': 5,
+            'KPI_10': 90,
+            'KPI_11': 100,
+            'KPI_12': 50,
+            'KPI_13': 22,
+            'KPI_14': 88,
+            'KPI_15': 60,
+            'KPI_16': 10,
+            'KPI_17': 45,
+            'KPI_18': 95,
+            'KPI_19': 5.5,
+            'KPI_20': 1.2,
+            'KPI_21': 77,
+            'KPI_22': 34,
+            'KPI_23': 11,
+            'KPI_24': 66,
+            'KPI_25': 2.5,
+            'KPI_26': 18,
+            'KPI_27': 80,
+            'KPI_28': 30,
+            'KPI_29': 70,
             'KPI_30': 99.9,
             
-            // คุณสามารถเพิ่ม Core Web Vitals ที่เก็บได้จากด้านล่างนี้
-            'LCP_Value': 0, // ค่าเริ่มต้น
+            // Core Web Vitals (ค่าเริ่มต้น)
+            'LCP_Value': 0, 
             'CLS_Value': 0, 
             'INP_Value': 0
         };
 
-        // **B. ฟังก์ชันสำหรับส่งข้อมูลผ่าน Fetch API**
-        fetch(GOOGLE_SHEETS_API_URL, {
-            method: 'POST',
-            mode: 'cors', // สำคัญสำหรับ CORS
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(kpiData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Google Sheet API Response:', data);
-            document.getElementById('saveStatus').textContent = `บันทึกข้อมูลสำเร็จ! สถานะ: ${data.result}`;
-        })
-        .catch(error => {
-            console.error('Error sending data to Google Sheets:', error);
-            document.getElementById('saveStatus').textContent = 'บันทึกข้อมูลล้มเหลว กรุณาตรวจสอบ Console';
-        });
-    }
+        // ******************************************************************
+        // 2. CORE FUNCTIONS
+        // ******************************************************************
 
-    // 3. โค้ด CWV Tracking (เราจะใช้แค่เก็บค่าแล้วรวมใน kpiData)
-    // เนื่องจาก CWV รายงานผลเมื่อโหลดเสร็จ (LCP) หรือเมื่อปิดหน้า (CLS, INP) 
-    // การส่ง 30 KPI อาจจะทำในจังหวะที่แตกต่างกัน
-    
-    // ตัวอย่าง: การเก็บ CWV และอัปเดตค่าใน kpiData
-    if (typeof getLCP === 'function') getLCP(metric => {
-        kpiData['LCP_Value'] = metric.value;
-        console.log(`LCP updated: ${metric.value}`);
-    });
-    // ... ทำซ้ำสำหรับ CLS และ INP
-    
-    // **4. สั่งให้ส่งข้อมูลเมื่อโหลดหน้าเสร็จสมบูรณ์**
-    window.onload = function() {
-        // ให้ส่งข้อมูลหลังจากโหลดเสร็จ 3 วินาที (เพื่อให้มีโอกาสเก็บ LCP ได้)
-        setTimeout(sendKPIsToSheets, 3000); 
-    };
-
-    // **5. เพิ่มปุ่มใน HTML เพื่อเรียกใช้ sendKPIsToSheets() ด้วยมือ**
+        /**
+         * จัดการการเก็บ Core Web Vitals และแสดงผลใน UI
+         */
+        function handleCWVMetric(metric) {
+            const resultElement = document.getElementById('trackingResults');
+            if (resultElement) {
+                // อัปเดต UI
+                resultElement.innerHTML += `<li>**${metric.name}** Value: ${metric.value.toFixed(2)} (${metric.rating})</li>`;
+            }
+            
+            // อัปเดต Global kpiData Object
+            if (metric.name === 'LCP') kpiData['LCP_Value'] = metric.value.toFixed(2);
+            if (metric.name === 'CLS') kpiData['CLS_Value'] = metric.value.toFixed(2);
+            if (metric.name === 'INP') kpiData['INP_Value'] = metric.value.toFixed(2);
+            
+            console.log(`CWV Updated: ${metric.name} = ${metric.value.toFixed(2)}`);
+        }
         
+        /**
+         * ส่งข้อมูล KPI & CWV ทั้งหมดไปยัง Google Sheets
+         */
+        function sendKPIsToSheets() {
+            // **B. ฟังก์ชันสำหรับส่งข้อมูลผ่าน Fetch API**
+            fetch(GOOGLE_SHEETS_API_URL, {
+                method: 'POST',
+                mode: 'cors', // สำคัญสำหรับ CORS
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(kpiData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Google Sheet API Response:', data);
+                // แสดงสถานะการบันทึก
+                const saveStatusElement = document.getElementById('saveStatus');
+                if (saveStatusElement) {
+                    saveStatusElement.innerHTML = `<span style="color: green; font-weight: bold;">บันทึกข้อมูลสำเร็จ!</span> สถานะ: ${data.result}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error sending data to Google Sheets:', error);
+                const saveStatusElement = document.getElementById('saveStatus');
+                if (saveStatusElement) {
+                    saveStatusElement.innerHTML = `<span style="color: red; font-weight: bold;">บันทึกข้อมูลล้มเหลว</span> กรุณาตรวจสอบ Console`;
+                }
+            });
+        }
+
+        // ******************************************************************
+        // 3. EVENT HANDLERS & INITIALIZATION
+        // ******************************************************************
+        
+        // 3.1. CWV Initialization
+        if (typeof getLCP === 'function') getLCP(handleCWVMetric);
+        if (typeof getCLS === 'function') getCLS(handleCWVMetric);
+        if (typeof getINP === 'function') getINP(handleCWVMetric);
+
+        // 3.2. Logout Function (กำหนดครั้งเดียว)
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+        
+        // 3.3. Send Data on Load
+        window.onload = function() {
+            // ให้ส่งข้อมูลหลังจากโหลดเสร็จ 3 วินาที (เพื่อให้มีโอกาสเก็บ LCP ได้)
+            setTimeout(sendKPIsToSheets, 3000); 
+        };
+
+        // ต้องทำให้ function logout ใช้งานได้ทั่วถึง
+        window.logout = logout; 
     </script>
 
     <style>
         body { font-family: Tahoma, Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
         .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
-        
-        /* สไตล์สำหรับส่วนหัวตามภาพ Screenshot */
         .title-bar {
             font-size: 1.5em;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
         }
-
-        /* สไตล์สำหรับ KPI-Dashboard Box สีฟ้า */
         .dashboard-box {
-            background-color: #e0f7ff; /* สีฟ้าอ่อน */
-            border: 1px solid #b3e5fc; /* ขอบสีฟ้า */
+            background-color: #e0f7ff; 
+            border: 1px solid #b3e5fc; 
             height: 200px;
             display: flex;
             justify-content: center;
@@ -140,11 +167,9 @@
         }
         .dashboard-box h2 {
             font-size: 3em;
-            color: #0277bd; /* สีน้ำเงินเข้ม */
+            color: #0277bd; 
             font-weight: 600;
         }
-        
-        /* สไตล์สำหรับข้อมูลเนื้อหาด้านล่าง */
         .content-section {
             background: #fff;
             padding: 20px;
@@ -162,6 +187,12 @@
             border-radius: 4px; 
             cursor: pointer; 
             z-index: 1000;
+        }
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px dashed #aaa;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -183,17 +214,24 @@
             <p>ยินดีต้อนรับ, หน้าแสดงการเฝ้าระวังตัวชี้วัด</p>
             <hr>
             
-            <h3>ตัวอย่างการเก็บ Core Web Vitals (CWV)</h3>
-            <p>นี่คือเนื้อหาหลักของหน้าเว็บ...</p>
-            <button onclick="console.log('User interacted');" style="padding: 10px;">คลิกเพื่อสร้าง Interaction (INP)</button>
-            <p>เลื่อนหน้าลงมาเพื่อดูการทำงานของ Tracker ใน Console</p>
+            <h3>สถานะการส่งข้อมูล KPI และ Core Web Vitals</h3>
+            <div id="saveStatus" class="status-message">
+                รอกำลังส่งข้อมูลไปยัง Google Sheets...
+            </div>
             
-            <div style="height: 10px;"></div>
+            <p>เมื่อหน้านี้โหลดเสร็จ ข้อมูล KPI 30 ตัวและค่า CWV จะถูกรวบรวมและส่งไปยัง Google Sheets โดยอัตโนมัติ.</p>
+            
+            <hr>
 
-            <h4>ผลลัพธ์การเก็บ CWV (จำลอง)</h4>
+            <h3>ผลลัพธ์การเก็บ Core Web Vitals (CWV)</h3>
+            <p>นี่คือข้อมูล CWV ที่วัดได้ในหน้านี้ (ดู Console เพื่อยืนยันการส่งข้อมูล):</p>
+            
             <ul id="trackingResults">
-                <li>(LCP/FCP จะแสดงหลังโหลด, INP/CLS จะแสดงเมื่อออกจากหน้า)</li>
+                <li>(LCP/FCP จะแสดงหลังโหลด, INP/CLS จะถูกคำนวณสุดท้าย)</li>
             </ul>
+            
+            <br>
+            <button onclick="console.log('User interacted');" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">คลิกเพื่อสร้าง Interaction (ทดสอบ INP)</button>
         </div>
         
     </div>
