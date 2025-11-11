@@ -40,6 +40,79 @@
             sessionStorage.removeItem('isLoggedIn');
             window.location.href = 'index.html';
         }
+
+        
+// **1. วาง Web App URL ที่คุณได้ Deploy มาแทนที่ลิงก์นี้**
+    const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyiAaOAweu3SJz7GiLCserf1cuJ-pvMcrITY-mdiCyBbuHObabbQiDp7JyAcmVlId3_Sw/exec'; 
+
+    function logout() {
+        sessionStorage.removeItem('isLoggedIn');
+        window.location.href = 'index.html';
+    }
+
+    /**
+     * ฟังก์ชันสำหรับรวบรวมและส่งข้อมูล 30 ตัวชี้วัดไปยัง Google Sheets
+     */
+    function sendKPIsToSheets() {
+        // **A. รวบรวมข้อมูลตัวชี้วัด 30 ตัว**
+        const kpiData = {
+            // ข้อมูลบริบท
+            'Page': window.location.pathname,
+            'Device': navigator.userAgent,
+            
+            // **ตัวชี้วัด KPI 30 ตัวของคุณ (ต้องตรงกับ Header ใน Google Sheet)**
+            'KPI_1': Math.floor(Math.random() * 100), // ตัวอย่าง: Random Value
+            'KPI_2': 'A-OK',
+            'KPI_3': 15.5,
+            // ...
+            'KPI_30': 99.9,
+            
+            // คุณสามารถเพิ่ม Core Web Vitals ที่เก็บได้จากด้านล่างนี้
+            'LCP_Value': 0, // ค่าเริ่มต้น
+            'CLS_Value': 0, 
+            'INP_Value': 0
+        };
+
+        // **B. ฟังก์ชันสำหรับส่งข้อมูลผ่าน Fetch API**
+        fetch(GOOGLE_SHEETS_API_URL, {
+            method: 'POST',
+            mode: 'cors', // สำคัญสำหรับ CORS
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(kpiData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Google Sheet API Response:', data);
+            document.getElementById('saveStatus').textContent = `บันทึกข้อมูลสำเร็จ! สถานะ: ${data.result}`;
+        })
+        .catch(error => {
+            console.error('Error sending data to Google Sheets:', error);
+            document.getElementById('saveStatus').textContent = 'บันทึกข้อมูลล้มเหลว กรุณาตรวจสอบ Console';
+        });
+    }
+
+    // 3. โค้ด CWV Tracking (เราจะใช้แค่เก็บค่าแล้วรวมใน kpiData)
+    // เนื่องจาก CWV รายงานผลเมื่อโหลดเสร็จ (LCP) หรือเมื่อปิดหน้า (CLS, INP) 
+    // การส่ง 30 KPI อาจจะทำในจังหวะที่แตกต่างกัน
+    
+    // ตัวอย่าง: การเก็บ CWV และอัปเดตค่าใน kpiData
+    if (typeof getLCP === 'function') getLCP(metric => {
+        kpiData['LCP_Value'] = metric.value;
+        console.log(`LCP updated: ${metric.value}`);
+    });
+    // ... ทำซ้ำสำหรับ CLS และ INP
+    
+    // **4. สั่งให้ส่งข้อมูลเมื่อโหลดหน้าเสร็จสมบูรณ์**
+    window.onload = function() {
+        // ให้ส่งข้อมูลหลังจากโหลดเสร็จ 3 วินาที (เพื่อให้มีโอกาสเก็บ LCP ได้)
+        setTimeout(sendKPIsToSheets, 3000); 
+    };
+
+    // **5. เพิ่มปุ่มใน HTML เพื่อเรียกใช้ sendKPIsToSheets() ด้วยมือ**
+        
     </script>
 
     <style>
