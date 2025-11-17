@@ -137,14 +137,9 @@
   <!-- [UPDATED] Mockup และ JavaScript -->
   <script>
     // --- MOCKUP (สำหรับการทดสอบใน Local) ---
+    // [UPDATED] ลบข้อมูลจำลอง (mockDB) ออกแล้ว
     if (typeof google === 'undefined' || typeof google.script === 'undefined') {
       console.warn("Google Apps Script API (google.script.run) not found. Mocking for local testing.");
-      
-      // ข้อมูลจำลอง
-      let mockDB = [
-        { row: 2, timestamp: "2025-11-17T10:00:00Z", firstName: "สมชาย", lastName: "จริงใจ", phone: "0812345678", email: "somchai@test.com", customerType: "vip", notes: "ติดต่อด่วน" },
-        { row: 3, timestamp: "2025-11-17T11:00:00Z", firstName: "สมหญิง", lastName: "ใฝ่ดี", phone: "0898765432", email: "somyhing@test.com", customerType: "normal", notes: "" }
-      ];
 
       window.google = {
         script: {
@@ -156,24 +151,15 @@
               withSuccessHandler: (handler) => { successHandler = handler; return runner; },
               withFailureHandler: (handler) => { failureHandler = handler; return runner; },
               
-              // จำลองฟังก์ชัน Backend
-              getCustomerData: () => setTimeout(() => successHandler([...mockDB]), 500),
+              // [UPDATED] จำลองฟังก์ชัน Backend (แบบไม่มีข้อมูล)
+              getCustomerData: () => setTimeout(() => successHandler([]), 500), // ส่งอาร์เรย์ว่างกลับไป
               addCustomerData: (formData) => setTimeout(() => {
-                const newId = mockDB.length ? Math.max(...mockDB.map(r => r.row)) + 1 : 2;
-                mockDB.push({ row: newId, ...formData, timestamp: new Date().toISOString() });
                 successHandler({ status: "success", message: "บันทึกข้อมูล (Mock) สำเร็จ!" });
               }, 500),
               updateCustomerData: (request) => setTimeout(() => {
-                const index = mockDB.findIndex(r => r.row == request.row);
-                if (index > -1) {
-                  mockDB[index] = { ...mockDB[index], ...request.data, timestamp: new Date().toISOString() };
-                  successHandler({ status: "success", message: "อัปเดตข้อมูล (Mock) สำเร็จ!" });
-                } else {
-                  failureHandler({ message: "ไม่พบข้อมูล (Mock)" });
-                }
+                successHandler({ status: "success", message: "อัปเดตข้อมูล (Mock) สำเร็จ!" });
               }, 500),
               deleteCustomerData: (rowNumber) => setTimeout(() => {
-                mockDB = mockDB.filter(r => r.row != rowNumber);
                 successHandler({ status: "success", message: "ลบข้อมูล (Mock) สำเร็จ!" });
               }, 500)
             };
