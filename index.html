@@ -1,116 +1,200 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPI Metrics - เข้าสู่ระบบ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .message {
-            margin-top: 15px;
-            text-align: center;
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ฟอร์มข้อมูลลูกค้า ABC</title>
+  
+  <!-- 1. โหลด Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. โหลด SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* ใช้ฟอนต์ Inter เพื่อความสวยงาม (เป็นทางเลือก) */
+    @import url('https://rsms.me/inter/inter.css');
+    html { font-family: 'Inter', sans-serif; }
+    @supports (font-variation-settings: normal) {
+      html { font-family: 'Inter var', sans-serif; }
+    }
+  </style>
 </head>
-<body>
 
-<div class="login-container">
-    <h2>เข้าสู่ระบบ KPI Dashboard</h2>
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="username">ชื่อผู้ใช้ (Login:)</label>
-            <input type="text" id="username" name="username" required>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl my-8">
+
+    <!-- ส่วนหัวของฟอร์ม -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">ฟอร์มบันทึกข้อมูลลูกค้า</h1>
+      <p class="text-gray-600 mt-2">บริษัท ABC จำกัด</p>
+    </div>
+
+    <!-- ฟอร์มสำหรับกรอกข้อมูล -->
+    <form id="customerForm">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- ชื่อ -->
+        <div>
+          <label for="firstName" class="block text-sm font-medium text-gray-700">ชื่อ</label>
+          <input type="text" id="firstName" name="firstName" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
         </div>
-        <div class="form-group">
-            <label for="password">รหัสผ่าน (Pass:)</label>
-            <input type="password" id="password" name="password" required>
+
+        <!-- สกุล -->
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700">สกุล</label>
+          <input type="text" id="lastName" name="lastName" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
         </div>
-        <button type="submit">เข้าสู่ระบบ</button>
-        <p id="errorMessage" class="message"></p>
+
+        <!-- เบอร์โทร -->
+        <div class="md:col-span-1">
+          <label for="phone" class="block text-sm font-medium text-gray-700">เบอร์โทร</label>
+          <input type="tel" id="phone" name="phone"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- อีเมล -->
+        <div class="md:col-span-1">
+          <label for="email" class="block text-sm font-medium text-gray-700">อีเมล</label>
+          <input type="email" id="email" name="email" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <!-- ประเภทลูกค้า -->
+        <div class="md:col-span-2">
+          <label for="customerType" class="block text-sm font-medium text-gray-700">ประเภทลูกค้า</label>
+          <select id="customerType" name="customerType" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="normal">Normal</option>
+            <option value="vip">VIP</option>
+          </select>
+        </div>
+
+        <!-- หมายเหตุ -->
+        <div class="md:col-span-2">
+          <label for="notes" class="block text-sm font-medium text-gray-700">หมายเหตุ</label>
+          <textarea id="notes" name="notes" rows="3"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+        </div>
+      </div>
+
+      <!-- ปุ่ม Submit -->
+      <div class="mt-8">
+        <button type="submit" id="submitButton"
+          class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+          <!-- ไอคอนหมุนสำหรับ Loading (ซ่อนไว้ก่อน) -->
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" id="loadingSpinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span id="buttonText">บันทึกข้อมูล</span>
+        </button>
+      </div>
     </form>
-</div>
 
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        // ป้องกันการ Submit Form แบบปกติ
-        event.preventDefault();
+    <!-- Footer -->
+    <footer class="text-center mt-8 text-sm text-gray-500">
+      Copyright © 2025, ABC จำกัด
+    </footer>
 
-        // กำหนดข้อมูล Login ที่ถูกต้อง
-        const CORRECT_USER = 'admin';
-        const CORRECT_PASS = 'Nsocbh';
+  </div>
 
-        // ดึงค่าที่ผู้ใช้กรอก
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const errorElement = document.getElementById('errorMessage');
+  <!-- 3. JavaScript สำหรับจัดการ Form Submission และ Google Apps Script -->
+  <script>
+    document.getElementById("customerForm").addEventListener("submit", function (e) {
+      e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
 
-        // ตรวจสอบรหัสผ่าน
-        if (username === CORRECT_USER && password === CORRECT_PASS) {
-            errorElement.textContent = '';
-            
-            // **การดำเนินการเมื่อ Login สำเร็จ:**
-            // 1. เก็บสถานะการ Login (ในตัวอย่างนี้ใช้ SessionStorage)
-            sessionStorage.setItem('isLoggedIn', 'true');
-            
-            // 2. เปลี่ยนเส้นทางไปยังหน้า Dashboard KPI
-            // เราจะเปลี่ยนไปที่ 'kpi-dashboard.html'
-            window.location.href = 'kpi-dashboard.html';
+      // 1. แสดงสถานะ Loading บนปุ่ม
+      var submitButton = document.getElementById("submitButton");
+      var buttonText = document.getElementById("buttonText");
+      var loadingSpinner = document.getElementById("loadingSpinner");
 
-        } else {
-            // แสดงข้อความผิดพลาด
-            errorElement.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง';
+      submitButton.disabled = true;
+      buttonText.textContent = "กำลังบันทึก...";
+      loadingSpinner.classList.remove("hidden");
+
+      // 2. แสดง SweetAlert "Loading"
+      Swal.fire({
+        title: 'กำลังบันทึกข้อมูล',
+        text: 'กรุณารอสักครู่...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
         }
+      });
+
+      // 3. รวบรวมข้อมูลจากฟอร์ม
+      var formData = {
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        customerType: document.getElementById("customerType").value,
+        notes: document.getElementById("notes").value
+      };
+
+      // 4. เรียกใช้ Google Apps Script
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .addCustomerData(formData);
     });
-</script>
+
+    /**
+     * ฟังก์ชันที่จะทำงานเมื่อ Google Apps Script ทำงานสำเร็จ
+     */
+    function onSuccess(response) {
+      // คืนค่าปุ่มกด
+      resetButton();
+      
+      if (response.status === "success") {
+        // 5.1 แสดง SweetAlert "Success"
+        Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: response.message,
+        });
+        // ล้างฟอร์ม
+        document.getElementById("customerForm").reset();
+      } else {
+        // 5.2 กรณี Backend ส่งสถานะ Error กลับมา
+        onFailure(response);
+      }
+    }
+
+    /**
+     * ฟังก์ชันที่จะทำงานเมื่อ Google Apps Script ทำงานล้มเหลว
+     */
+    function onFailure(error) {
+      // คืนค่าปุ่มกด
+      resetButton();
+
+      // 5.3 แสดง SweetAlert "Error"
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.message || 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง',
+      });
+    }
+
+    /**
+     * ฟังก์ชันสำหรับคืนค่าปุ่มกดให้เป็นปกติ
+     */
+    function resetButton() {
+      var submitButton = document.getElementById("submitButton");
+      var buttonText = document.getElementById("buttonText");
+      var loadingSpinner = document.getElementById("loadingSpinner");
+
+      submitButton.disabled = false;
+      buttonText.textContent = "บันทึกข้อมูล";
+      loadingSpinner.classList.add("hidden");
+    }
+
+  </script>
 
 </body>
 </html>
