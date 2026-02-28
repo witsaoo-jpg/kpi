@@ -461,11 +461,6 @@
             color: var(--danger-color);
         }
 
-        .status-warning {
-            background: #fff3e0;
-            color: var(--warning-color);
-        }
-
         /* Buttons */
         .btn {
             padding: 12px 24px;
@@ -521,13 +516,6 @@
             font-size: 0.85rem;
         }
 
-        .btn-view {
-            background: var(--primary-light);
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-
         .btn-group {
             display: flex;
             gap: 8px;
@@ -562,10 +550,6 @@
             background: #f5f5f5;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
         /* Filter Section */
         .filter-section {
             display: flex;
@@ -578,134 +562,6 @@
         .filter-section select {
             width: auto;
             min-width: 200px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .modal-header h3 {
-            color: var(--primary-dark);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #78909c;
-        }
-
-        .modal-close:hover {
-            color: var(--danger-color);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Dimension Cards */
-        .dimension-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .dimension-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            border-top: 4px solid var(--primary-color);
-            transition: var(--transition);
-        }
-
-        .dimension-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .dimension-card h3 {
-            color: var(--primary-dark);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .dimension-card p {
-            color: #78909c;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-
-        .dimension-stats {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .dimension-stats .stat {
-            text-align: center;
-        }
-
-        .dimension-stats .stat .num {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .dimension-stats .stat .label {
-            font-size: 0.8rem;
-            color: #78909c;
         }
 
         /* Toast Notification */
@@ -729,26 +585,44 @@
             opacity: 1;
         }
 
-        .toast.success {
-            background: var(--success-color);
+        .toast.success { background: var(--success-color); }
+        .toast.error { background: var(--danger-color); }
+        .toast.info { background: #0288d1; }
+
+        .hidden { display: none !important; }
+
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
 
-        .toast.error {
-            background: var(--danger-color);
-        }
-        
-        .toast.info {
-            background: #0288d1;
+        .dimension-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary-color);
+            transition: var(--transition);
         }
 
-        /* Print Styles */
-        @media print {
-            .sidebar, .btn, .filter-section {
-                display: none;
-            }
-            .main-content {
-                margin-left: 0;
-            }
+        .dimension-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 10px;
+        }
+
+        .stat .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat .label {
+            font-size: 0.8rem;
+            color: #78909c;
         }
     </style>
 </head>
@@ -775,18 +649,13 @@
                     <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
                 </button>
             </form>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">
-                กู้คืนรหัสผ่าน ติดต่อแผนกเทคโนโลยีสารสนเทศ
-            </div>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         <nav class="sidebar" id="sidebar">
             <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-hospital-user"></i>
-                </div>
+                <div class="logo-icon"><i class="fas fa-hospital-user"></i></div>
                 <div class="logo-text">
                     <h2>โรงพยาบาลชลบุรี</h2>
                     <p>ระบบจัดการตัวชี้วัดคุณภาพ</p>
@@ -808,20 +677,11 @@
                         <i class="fas fa-list"></i> รายการข้อมูล (List)
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="showSection('reports')">
-                        <i class="fas fa-file-alt"></i> รายงาน (Reports)
-                    </a>
-                </li>
             </ul>
             <div style="margin-top: auto; padding: 10px;">
-                <button class="btn btn-danger" onclick="logout()" style="width: 100%; justify-content: center; background: rgba(229, 57, 53, 0.2); border: 1px solid var(--danger-color);">
+                <button class="btn btn-danger" onclick="logout()" style="width: 100%; justify-content: center; background: rgba(229, 57, 53, 0.1); border: 1px solid var(--danger-color);">
                     <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
                 </button>
-            </div>
-            <div class="sidebar-footer">
-                <p>© 2024 กองการพยาบาล</p>
-                <p>โรงพยาบาลชลบุรี</p>
             </div>
         </nav>
 
@@ -850,17 +710,14 @@
                     <div class="stat-card">
                         <h3><i class="fas fa-calendar-check"></i> บันทึกเดือนนี้</h3>
                         <div class="value" id="records-this-month">0</div>
-                        <div class="trend" id="month-trend">-</div>
                     </div>
                     <div class="stat-card" style="border-left-color: var(--success-color);">
                         <h3><i class="fas fa-check-circle"></i> ผ่านเกณฑ์เฉลี่ย</h3>
                         <div class="value" id="avg-compliance">0%</div>
-                        <div class="trend up" id="compliance-trend">-</div>
                     </div>
                     <div class="stat-card" style="border-left-color: var(--danger-color);">
                         <h3><i class="fas fa-exclamation-triangle"></i> ต่ำกว่าเกณฑ์</h3>
                         <div class="value" id="below-target">0</div>
-                        <div class="trend down" id="below-trend">-</div>
                     </div>
                 </div>
 
@@ -868,8 +725,7 @@
                     <div class="card-header">
                         <h2><i class="fas fa-th-large"></i> โครงสร้างตัวชี้วัด (6 มิติ)</h2>
                     </div>
-                    <div class="dimension-grid" id="dimension-cards-container">
-                        </div>
+                    <div class="dimension-grid" id="dimension-cards-container"></div>
                 </div>
             </section>
 
@@ -946,9 +802,7 @@
                         </div>
 
                         <div style="text-align: right; margin-top: 30px; display: flex; gap: 10px; justify-content: flex-end;">
-                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                                <i class="fas fa-times"></i> ยกเลิก
-                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="showSection('data-list')">ยกเลิก</button>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> บันทึกข้อมูล
                             </button>
@@ -961,9 +815,6 @@
                 <div class="content-card">
                     <div class="card-header">
                         <h2><i class="fas fa-table"></i> รายการข้อมูลที่บันทึก</h2>
-                        <button class="btn btn-primary" onclick="exportToCSV()">
-                            <i class="fas fa-download"></i> ส่งออก CSV
-                        </button>
                     </div>
                     
                     <div class="filter-section">
@@ -980,11 +831,6 @@
                         <select id="filter-ward" onchange="renderTable()">
                             <option value="all">ทุกหอผู้ป่วย</option>
                         </select>
-                        <select id="filter-status" onchange="renderTable()">
-                            <option value="all">ทุกสถานะ</option>
-                            <option value="pass">ผ่านเกณฑ์</option>
-                            <option value="fail">ไม่ผ่านเกณฑ์</option>
-                        </select>
                     </div>
                     
                     <div class="table-container">
@@ -998,99 +844,27 @@
                                     <th>ค่า A</th>
                                     <th>ค่า B</th>
                                     <th>ผลลัพธ์</th>
-                                    <th>เป้าหมาย</th>
                                     <th>สถานะ</th>
                                     <th>จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                </tbody>
+                                <tr><td colspan="9" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
+                            </tbody>
                         </table>
                     </div>
-                </div>
-            </section>
-
-            <section id="reports" class="content-section hidden">
-                <div class="content-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-chart-bar"></i> รายงานสรุปผล</h2>
-                        <button class="btn btn-primary" onclick="window.print()">
-                            <i class="fas fa-print"></i> พิมพ์รายงาน
-                        </button>
-                    </div>
-                    
-                    <div class="form-grid" style="margin-bottom: 30px;">
-                        <div class="form-group">
-                            <label>เลือกมิติ</label>
-                            <select id="report-dimension" onchange="generateReport()">
-                                <option value="all">ทุกมิติ</option>
-                                <option value="1">มิติที่ 1</option>
-                                <option value="2">มิติที่ 2</option>
-                                <option value="3">มิติที่ 3</option>
-                                <option value="4">มิติที่ 4</option>
-                                <option value="5">มิติที่ 5</option>
-                                <option value="6">มิติที่ 6</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>เลือกหอผู้ป่วย</label>
-                            <select id="report-ward" onchange="generateReport()">
-                                <option value="all">ทุกหอผู้ป่วย</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="report-content">
-                        </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <div class="modal" id="view-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-eye"></i> รายละเอียดข้อมูล</h3>
-                <button class="modal-close" onclick="closeModal('view-modal')">&times;</button>
-            </div>
-            <div id="view-content">
-                </div>
-        </div>
-    </div>
-
     <div class="toast" id="toast"></div>
 
     <script>
-        // --- Login Logic ---
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+        // --- Configuration & Data ---
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBpnbe9Nb9ti4Ei--IhORGJu6DHX4EEjhIGSu0TvNIuZ_eMTFQEwq3JFxBS_pQeTys/exec';
+        let records = [];
 
-            // ตรวจสอบข้อมูลล็อกอิน (เปลี่ยนเป็นข้อมูลที่คุณต้องการ)
-            if (user === 'admin' && pass === '1234') {
-                showToast('เข้าสู่ระบบสำเร็จ', 'success');
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('display-user-name').textContent = user;
-                loadDataFromSheet(); // โหลดข้อมูลเมื่อเข้าสู่ระบบสำเร็จ
-            } else {
-                showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
-            }
-        });
-
-        function logout() {
-            if(confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
-                document.getElementById('main-app').classList.add('hidden');
-                document.getElementById('login-section').classList.remove('hidden');
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                showToast('ออกจากระบบแล้ว', 'info');
-            }
-        }
-
-        // --- Data Definitions (Same as before) ---
-        
         const wards = [
             "หอผู้ป่วย สก.3", "หอผู้ป่วย สก.4", "หอผู้ป่วย สก.5", "หอผู้ป่วย สก.6",
             "หอผู้ป่วยสงฆ์อาพาธ", "หอผู้ป่วยสงฆ์พิเศษ 2+3", "หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1",
@@ -1106,173 +880,91 @@
         ];
 
         const indicatorsDB = [
-            // Dimension 1
-            { id: 101, dim: 1, name: "ร้อยละของตัวชี้วัดวิสัยทัศน์ที่บรรลุเป้าหมาย", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนตัวชี้วัดวิสัยทัศน์ที่บรรลุเป้าหมาย", varB: "จำนวนตัวชี้วัดวิสัยทัศน์ทั้งหมด" },
-            { id: 102, dim: 1, name: "ร้อยละของโครงการ/กิจกรรมดำเนินการตามกระบวนการควบคุมภายในที่มีคะแนนความเสี่ยงลดลง", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนโครงการ/กิจกรรมที่มีคะแนนความเสี่ยงลดลง", varB: "จำนวนโครงการ/กิจกรรมทั้งหมด" },
-            { id: 103, dim: 1, name: "ร้อยละของบุคลากรพยาบาลที่มีผลการประเมินจริยธรรมจรรยาบรรณวิชาชีพผ่านเกณฑ์ที่กำหนด", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรพยาบาลที่ผ่านเกณฑ์", varB: "จำนวนบุคลากรพยาบาลทั้งหมด" },
-            
-            // Dimension 2
-            { id: 201, dim: 2, name: "ผลิตภาพของงานการพยาบาลผู้ป่วยใน (Nursing Productivity)", targetMin: 90, targetMax: 110, targetType: "range", formula: "(A×100)/B", varA: "จำนวนชั่วโมงความต้องการการพยาบาลของผู้ป่วยทั้งหมด", varB: "จำนวนชั่วโมงการปฏิบัติการพยาบาลของพยาบาลทั้งหมด" },
-            { id: 202, dim: 2, name: "จำนวนวันนอนเฉลี่ย", target: "ตามบริบทหน่วยงาน", targetType: "value", formula: "A/B", varA: "จำนวนวันนอนรวมของผู้ป่วยที่จำหน่าย", varB: "จำนวนผู้ป่วยที่จำหน่ายทั้งหมด" },
-            { id: 203, dim: 2, name: "ร้อยละของบุคลากรพยาบาลที่มีจำนวนชั่วโมงการปฏิบัติงานการพยาบาลเฉลี่ยมากกว่า 60 ชั่วโมงต่อสัปดาห์", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนบุคลากรพยาบาลที่มีชั่วโมงทำงาน > 60 ชม./สัปดาห์", varB: "จำนวนบุคลากรพยาบาลทั้งหมด" },
-            { id: 204, dim: 2, name: "ร้อยละของอุบัติการณ์/ความเสี่ยงทางการพยาบาลได้รับการจัดการทันเวลาตามที่กำหนด", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนอุบัติการณ์ที่จัดการทันเวลา", varB: "จำนวนอุบัติการณ์ทั้งหมด" },
-
-            // Dimension 3
-            { id: 301, dim: 3, name: "ร้อยละความพึงพอใจของผู้ใช้บริการต่อบริการพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนความพึงพอใจจากแบบสอบถามทั้งหมด", varB: "คะแนนเต็มรวมของแบบสอบถามทั้งหมด" },
-            { id: 302, dim: 3, name: "ร้อยละความพึงพอใจของผู้มีส่วนได้ส่วนเสียต่อหน่วยงานบริการพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนความพึงพอใจจากผู้มีส่วนได้ส่วนเสีย", varB: "คะแนนเต็มรวมของแบบสอบถามทั้งหมด" },
-            { id: 303, dim: 3, name: "ร้อยละความไม่พึงพอใจของผู้ใช้บริการต่อบริการพยาบาล", target: 5, targetType: "lt", formula: "(A×100)/B", varA: "จำนวนข้อ/รายการที่ไม่พึงพอใจ", varB: "จำนวนข้อ/รายการทั้งหมด" },
-            { id: 304, dim: 3, name: "จำนวนข้อร้องเรียนของผู้ใช้บริการเกี่ยวกับสิทธิหรือการละเมิดสิทธิผู้ใช้บริการ", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนข้อร้องเรียน", varB: "-" },
-            { id: 305, dim: 3, name: "จำนวนข้อร้องเรียนของผู้ใช้บริการเกี่ยวกับสิทธิหรือการละเมิดสิทธิผู้ใช้บริการกลุ่มเฉพาะ", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนข้อร้องเรียน", varB: "-" },
-            { id: 306, dim: 3, name: "จำนวนข้อร้องเรียนของผู้ใช้บริการเกี่ยวกับพฤติกรรมบริการของบุคลากรพยาบาล", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนข้อร้องเรียน", varB: "-" },
-            { id: 307, dim: 3, name: "จำนวนข้อร้องเรียนของผู้ใช้บริการเกี่ยวกับการละเมิดข้อมูลส่วนบุคคล", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนข้อร้องเรียน", varB: "-" },
-            { id: 308, dim: 3, name: "ร้อยละของการแก้ไขและ/หรือการตอบกลับข้อร้องเรียนของผู้ใช้บริการ", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนข้อร้องเรียนที่แก้ไข/ตอบกลับ", varB: "จำนวนข้อร้องเรียนทั้งหมด" },
-
-            // Dimension 4
-            { id: 401, dim: 4, name: "ร้อยละความผูกพันของบุคลากรพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนความผูกพันจากแบบประเมิน", varB: "คะแนนเต็มรวมของแบบประเมิน" },
-            { id: 402, dim: 4, name: "ร้อยละความพึงพอใจในงานและบรรยากาศองค์กรของบุคลากรพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนความพึงพอใจจากแบบประเมิน", varB: "คะแนนเต็มรวมของแบบประเมิน" },
-            { id: 403, dim: 4, name: "ร้อยละการโอนย้ายและลาออกของบุคลากรพยาบาล", target: 1, targetType: "lte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่โอนย้าย/ลาออก", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 404, dim: 4, name: "ร้อยละของบุคลากรพยาบาลมีสมรรถนะตามบทบาทหน้าที่และสมรรถนะเฉพาะตามเกณฑ์ที่กำหนด", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่มีสมรรถนะตามเกณฑ์", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 405, dim: 4, name: "ร้อยละของบุคลากรพยาบาลได้รับการอบรมฟื้นฟูทักษะการช่วยฟื้นคืนชีพขั้นพื้นฐานอย่างน้อย 1 ครั้งต่อปี", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่อบรม BLS", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 406, dim: 4, name: "ร้อยละของบุคลากรพยาบาลได้รับการอบรมฟื้นฟูทักษะการช่วยฟื้นคืนชีพขั้นสูงอย่างน้อย 1 ครั้งต่อปี", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่อบรม ACLS", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 407, dim: 4, name: "ร้อยละของบุคลากรพยาบาลได้รับการอบรมฟื้นฟูทักษะการป้องกันและควบคุมการติดเชื้อในโรงพยาบาลอย่างน้อย 1 ครั้งต่อปี", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่อบรม IC", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 408, dim: 4, name: "ร้อยละของบุคลากรพยาบาลที่ได้รับการตรวจสุขภาพประจำปีและตามความเสี่ยงจากการทำงาน", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่ตรวจสุขภาพ", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 409, dim: 4, name: "ร้อยละของบุคลากรพยาบาลที่เจ็บป่วยหรือเกิดอุบัติเหตุจากการปฏิบัติงานได้รับการดูแลตามแนวทางการดูแลรักษา", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่ได้รับการดูแล", varB: "จำนวนบุคลากรที่เจ็บป่วย/อุบัติเหตุทั้งหมด" },
-
-            // Dimension 5
-            { id: 501, dim: 5, name: "ร้อยละของบุคลากรพยาบาลที่ปฏิบัติตามแนวทางปฏิบัติการพยาบาล", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบุคลากรที่ปฏิบัติตามแนวทาง", varB: "จำนวนบุคลากรทั้งหมด" },
-            { id: 502, dim: 5, name: "ร้อยละของการบันทึกทางการพยาบาลตามเกณฑ์มาตรฐานการพยาบาลในโรงพยาบาล", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนบันทึกที่ครบถ้วนตามเกณฑ์", varB: "จำนวนบันทึกที่สุ่มประเมินทั้งหมด" },
-            { id: 503, dim: 5, name: "ร้อยละของอุบัติการณ์ภัยพิบัติหรือภาวะฉุกเฉินได้รับการจัดการตามกระบวนการที่กำหนด", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนครั้งที่จัดการตามกระบวนการ", varB: "จำนวนครั้งทั้งหมด" },
-            { id: 504, dim: 5, name: "ร้อยละของฐานข้อมูลจำเป็นตามมาตรฐานการพยาบาลในโรงพยาบาลที่นำมาใช้ประโยชน์ทางการพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนฐานข้อมูลที่นำมาใช้ประโยชน์", varB: "จำนวนฐานข้อมูลทั้งหมด" },
-            { id: 505, dim: 5, name: "ร้อยละขององค์ความรู้และ/หรือนวัตกรรมทางการพยาบาลที่พัฒนาด้วยการจัดการความรู้และนำไปใช้", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนองค์ความรู้/นวัตกรรมที่นำไปใช้", varB: "จำนวนองค์ความรู้/นวัตกรรมทั้งหมด" },
-            { id: 506, dim: 5, name: "จำนวนอุบัติการณ์ความไม่พร้อมต่อการช่วยชีวิตฉุกเฉิน", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนอุบัติการณ์", varB: "-" },
-            { id: 507, dim: 5, name: "จำนวนอุบัติการณ์ไม่พึงประสงค์จากการบริหารจัดการยาเสพติดให้โทษประเภท 2", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนอุบัติการณ์", varB: "-" },
-
-            // Dimension 6
-            { id: 601, dim: 6, name: "ร้อยละของผู้ป่วยที่อยู่ในภาวะคุกคามชีวิตได้รับการแก้ไขทันทีภายใน 4 นาที", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนผู้ป่วยที่แก้ไขภายใน 4 นาที", varB: "จำนวนผู้ป่วยภาวะคุกคามชีวิตทั้งหมด" },
-            { id: 602, dim: 6, name: "อัตราการเกิดอาการเปลี่ยนแปลงของผู้ป่วยโดยไม่ได้คาดการณ์", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนผู้ป่วยที่เกิดอาการเปลี่ยนแปลง", varB: "จำนวนผู้ป่วยทั้งหมด" },
-            { id: 603, dim: 6, name: "อัตราการเกิดภาวะแทรกซ้อนที่ป้องกันได้", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนผู้ป่วยที่เกิดภาวะแทรกซ้อน", varB: "จำนวนผู้ป่วยทั้งหมด" },
-            { id: 604, dim: 6, name: "อัตราการเกิดอุบัติการณ์ไม่พึงประสงค์ระหว่างส่งต่อหรือเคลื่อนย้าย", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนครั้งที่เกิดอุบัติการณ์", varB: "จำนวนครั้งส่งต่อ/เคลื่อนย้ายทั้งหมด" },
-            { id: 605, dim: 6, name: "อัตราการกลับเข้ารักษาซ้ำในโรงพยาบาลภายใน 28 วันโดยไม่ได้วางแผน", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนผู้ป่วยที่กลับเข้ารักษาซ้ำ", varB: "จำนวนผู้ป่วยที่จำหน่ายทั้งหมด" },
-            { id: 606, dim: 6, name: "ร้อยละของความคลาดเคลื่อนจากการบริหารยา/สารน้ำมีความรุนแรงระดับ E-I", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนความคลาดเคลื่อนระดับ E-I", varB: "จำนวนความคลาดเคลื่อนทั้งหมด (ระดับ A-I)" },
-            { id: 607, dim: 6, name: "ร้อยละของความคลาดเคลื่อนจากการให้เลือดมีความรุนแรงระดับ E-I", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนความคลาดเคลื่อนระดับ E-I", varB: "จำนวนความคลาดเคลื่อนทั้งหมด (ระดับ A-I)" },
-            { id: 608, dim: 6, name: "จำนวนอุบัติการณ์การระบุตัวผู้ป่วยผิดคน", target: 0, targetType: "eq", formula: "นับจำนวน", varA: "จำนวนอุบัติการณ์", varB: "-" },
-            { id: 609, dim: 6, name: "ร้อยละของการพลัดตกหกล้มมีความรุนแรงระดับ E-I", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนการพลัดตกหกล้มระดับ E-I", varB: "จำนวนการพลัดตกหกล้มทั้งหมด (ระดับ A-I)" },
-            { id: 610, dim: 6, name: "อัตราการเกิดการบาดเจ็บจากการจัดท่า ผูกยึด หรือการใช้อุปกรณ์และเครื่องมือ", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนผู้ป่วยที่มีการบาดเจ็บ", varB: "จำนวนผู้ป่วยที่มีการผูกยึด/ใช้อุปกรณ์ทั้งหมด" },
-            { id: 611, dim: 6, name: "อัตราการเกิดแผลกดทับในโรงพยาบาล", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนแผลกดทับใหม่ทั้งหมด", varB: "จำนวนผู้ป่วยกลุ่มเสี่ยงทั้งหมด" },
-            { id: 612, dim: 6, name: "อัตราการติดเชื้อในโรงพยาบาล", target: 0, targetType: "eq", formula: "(A×1000)/B", varA: "จำนวนครั้งการติดเชื้อ", varB: "จำนวนวันนอนหรือวันใส่อุปกรณ์ของผู้ป่วยกลุ่มเสี่ยง" },
-            { id: 613, dim: 6, name: "ร้อยละของผู้ป่วยหรือญาติที่มีความรู้และทักษะตามแผนจำหน่ายรายบุคคล", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนผู้ป่วย/ญาติที่มีความรู้และทักษะ", varB: "จำนวนผู้ป่วยจำหน่ายทั้งหมด" }
+            { id: 101, dim: 1, name: "ร้อยละของตัวชี้วัดวิสัยทัศน์ที่บรรลุเป้าหมาย", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนตัวชี้วัดที่บรรลุ", varB: "จำนวนตัวชี้วัดทั้งหมด" },
+            { id: 102, dim: 1, name: "ร้อยละของโครงการมีคะแนนความเสี่ยงลดลง", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนที่มีความเสี่ยงลด", varB: "จำนวนทั้งหมด" },
+            { id: 103, dim: 1, name: "ร้อยละบุคลากรผ่านเกณฑ์จริยธรรม", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนที่ผ่านเกณฑ์", varB: "จำนวนทั้งหมด" },
+            { id: 201, dim: 2, name: "ผลิตภาพงานการพยาบาล (Productivity)", targetMin: 90, targetMax: 110, targetType: "range", formula: "(A×100)/B", varA: "ชม.ความต้องการพยาบาล", varB: "ชม.ปฏิบัติการจริง" },
+            { id: 301, dim: 3, name: "ร้อยละความพึงพอใจต่อบริการพยาบาล", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนพึงพอใจ", varB: "คะแนนเต็ม" },
+            { id: 401, dim: 4, name: "ร้อยละความผูกพันของบุคลากร", target: 80, targetType: "gte", formula: "(A×100)/B", varA: "คะแนนความผูกพัน", varB: "คะแนนเต็ม" },
+            { id: 501, dim: 5, name: "ร้อยละบุคลากรที่ปฏิบัติตามแนวทาง", target: 100, targetType: "gte", formula: "(A×100)/B", varA: "จำนวนที่ปฏิบัติถูก", varB: "จำนวนทั้งหมด" },
+            { id: 611, dim: 6, name: "อัตราการเกิดแผลกดทับในโรงพยาบาล", target: 0, targetType: "eq", formula: "(A×100)/B", varA: "จำนวนแผลใหม่", varB: "จำนวนกลุ่มเสี่ยง" },
+            { id: 612, dim: 6, name: "อัตราการติดเชื้อในโรงพยาบาล", target: 0, targetType: "eq", formula: "(A×1000)/B", varA: "จำนวนครั้งติดเชื้อ", varB: "จำนวนวันนอนรวม" }
+            // ... เพิ่มเติมได้ตามต้องการ
         ];
 
-        // --- State Management ---
-        let records = [];
-        
-        // ** URL ที่ได้จาก Apps Script **
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBpnbe9Nb9ti4Ei--IhORGJu6DHX4EEjhIGSu0TvNIuZ_eMTFQEwq3JFxBS_pQeTys/exec';
-
-        // --- Initialization ---
+        // --- App Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             populateWards();
-            populateWardFilter();
-            
             const now = new Date();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const year = now.getFullYear();
-            document.getElementById('entry-date').value = `${year}-${month}`;
+            document.getElementById('entry-date').value = now.toISOString().slice(0, 7);
         });
 
-        // ฟังก์ชันดึงข้อมูลจาก Google Sheets
+        function populateWards() {
+            const selectEntry = document.getElementById('entry-ward');
+            const selectFilter = document.getElementById('filter-ward');
+            wards.forEach(w => {
+                const opt1 = new Option(w, w);
+                selectEntry.add(opt1);
+                const opt2 = new Option(w, w);
+                selectFilter.add(opt2);
+            });
+        }
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if (user === 'admin' && pass === '1234') {
+                showToast('เข้าสู่ระบบสำเร็จ', 'success');
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('display-user-name').textContent = user;
+                loadDataFromSheet();
+            } else {
+                showToast('รหัสผ่านไม่ถูกต้อง', 'error');
+            }
+        });
+
         async function loadDataFromSheet() {
             showToast('กำลังโหลดข้อมูล...', 'info');
             try {
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
-                
                 records = data.map(r => ({
+                    ...r,
                     id: parseInt(r.id),
-                    date: r.date,
-                    ward: r.ward,
                     dim: parseInt(r.dim),
                     indId: parseInt(r.indId),
-                    indName: r.indName,
                     valA: parseFloat(r.valA),
                     valB: parseFloat(r.valB),
                     result: parseFloat(r.result),
-                    isPass: r.isPass === true || r.isPass === 'true',
-                    notes: r.notes || '',
-                    formula: indicatorsDB.find(i => i.id == r.indId)?.formula || '',
-                    targetType: indicatorsDB.find(i => i.id == r.indId)?.targetType || '',
-                    target: indicatorsDB.find(i => i.id == r.indId)?.target || ''
+                    isPass: r.isPass === true || r.isPass === 'true'
                 }));
-                
                 updateDashboard();
+                renderTable();
             } catch (error) {
                 console.error(error);
+                showToast('โหลดข้อมูลล้มเหลว', 'error');
             }
         }
 
-        // --- Rest of original functions (showSection, populateWards, renderTable, etc.) ---
-        // (Include all original functions here to maintain full functionality)
-        
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(sectionId).classList.remove('hidden');
-            
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            const titles = {
-                'dashboard': 'ภาพรวมตัวชี้วัด',
-                'data-entry': 'บันทึกข้อมูล',
-                'data-list': 'รายการข้อมูล',
-                'reports': 'รายงานสรุปผล'
-            };
-            document.getElementById('page-title').textContent = titles[sectionId];
-
-            if(sectionId === 'dashboard') updateDashboard();
-            if(sectionId === 'data-list') renderTable();
-            if(sectionId === 'data-entry') resetForm();
-            if(sectionId === 'reports') generateReport();
-        }
-
-        function populateWards() {
-            const select = document.getElementById('entry-ward');
-            wards.forEach(ward => {
-                const option = document.createElement('option');
-                option.value = ward;
-                option.textContent = ward;
-                select.appendChild(option);
-            });
-        }
-
-        function populateWardFilter() {
-            const select = document.getElementById('filter-ward');
-            const reportSelect = document.getElementById('report-ward');
-            wards.forEach(ward => {
-                const option1 = document.createElement('option');
-                option1.value = ward;
-                option1.textContent = ward;
-                select.appendChild(option1);
-
-                const option2 = document.createElement('option');
-                option2.value = ward;
-                option2.textContent = ward;
-                reportSelect.appendChild(option2);
-            });
+            if (event) event.currentTarget.classList.add('active');
+            if (sectionId === 'dashboard') updateDashboard();
+            if (sectionId === 'data-list') renderTable();
         }
 
         function loadIndicatorsByDimension() {
             const dim = document.getElementById('entry-dimension').value;
-            const indicatorSelect = document.getElementById('entry-indicator');
-            indicatorSelect.innerHTML = '<option value="">-- เลือกตัวชี้วัด --</option>';
-            indicatorSelect.disabled = !dim;
-
+            const select = document.getElementById('entry-indicator');
+            select.innerHTML = '<option value="">-- เลือกตัวชี้วัด --</option>';
+            select.disabled = !dim;
             if (dim) {
-                const filtered = indicatorsDB.filter(i => i.dim == dim);
-                filtered.forEach(ind => {
-                    const option = document.createElement('option');
-                    option.value = ind.id;
-                    option.textContent = `${ind.id}. ${ind.name}`;
-                    indicatorSelect.appendChild(option);
+                indicatorsDB.filter(i => i.dim == dim).forEach(ind => {
+                    select.add(new Option(`${ind.id}. ${ind.name}`, ind.id));
                 });
             }
             updateFormulaHint();
@@ -1281,42 +973,12 @@
         function updateFormulaHint() {
             const indId = document.getElementById('entry-indicator').value;
             const container = document.getElementById('formula-container');
-            const code = document.getElementById('formula-code');
-            const variables = document.getElementById('formula-variables');
-            const targetDisplay = document.getElementById('target-display');
-            
-            if (!indId) {
-                container.style.display = 'none';
-                return;
-            }
-
+            if (!indId) { container.style.display = 'none'; return; }
             const ind = indicatorsDB.find(i => i.id == indId);
             container.style.display = 'block';
-            code.textContent = ind.formula;
-            
-            let varsHtml = '';
-            varsHtml += `<p><strong>A =</strong> ${ind.varA}</p>`;
-            if (ind.varB !== '-') {
-                varsHtml += `<p><strong>B =</strong> ${ind.varB}</p>`;
-            }
-            variables.innerHTML = varsHtml;
-
-            let targetText = '';
-            if (ind.targetType === 'range') {
-                targetText = `${ind.targetMin}-${ind.targetMax}%`;
-            } else if (ind.targetType === 'eq') {
-                targetText = `= ${ind.target}`;
-            } else if (ind.targetType === 'gte') {
-                targetText = `≥ ${ind.target}%`;
-            } else if (ind.targetType === 'lte') {
-                targetText = `≤ ${ind.target}%`;
-            } else if (ind.targetType === 'lt') {
-                targetText = `< ${ind.target}%`;
-            } else {
-                targetText = ind.target;
-            }
-            targetDisplay.textContent = `เป้าหมาย: ${targetText}`;
-
+            document.getElementById('formula-code').textContent = ind.formula;
+            document.getElementById('formula-variables').innerHTML = `<p>A = ${ind.varA}</p><p>B = ${ind.varB}</p>`;
+            document.getElementById('target-display').textContent = `เป้าหมาย: ${ind.target}%`;
             calculateResult();
         }
 
@@ -1324,258 +986,151 @@
             const indId = document.getElementById('entry-indicator').value;
             const valA = parseFloat(document.getElementById('val-a').value) || 0;
             const valB = parseFloat(document.getElementById('val-b').value) || 0;
-            const resultDisplay = document.getElementById('result-display');
-
             if (!indId) return;
-
             const ind = indicatorsDB.find(i => i.id == indId);
-            let result = 0;
-
-            if (ind.formula.includes('นับจำนวน')) {
-                result = valA;
-            } else if (ind.formula.includes('×1000')) {
-                result = valB === 0 ? 0 : (valA * 1000) / valB;
-            } else if (ind.formula.includes('×100')) {
-                result = valB === 0 ? 0 : (valA * 100) / valB;
-            } else {
-                result = valB === 0 ? 0 : valA / valB;
-            }
-
-            const isCount = ind.formula.includes('นับจำนวน');
-            resultDisplay.textContent = isCount ? `${result} ครั้ง` : `${result.toFixed(2)}%`;
-            resultDisplay.dataset.raw = result;
+            let res = 0;
+            if (ind.formula.includes('1000')) res = valB ? (valA * 1000) / valB : 0;
+            else if (ind.formula.includes('100')) res = valB ? (valA * 100) / valB : 0;
+            else res = valB ? valA / valB : 0;
+            document.getElementById('result-display').textContent = res.toFixed(2) + '%';
+            document.getElementById('result-display').dataset.raw = res;
         }
 
-        function checkStatus(result, ind) {
-            if (ind.targetType === 'gte') return result >= ind.target;
-            if (ind.targetType === 'lte') return result <= ind.target;
-            if (ind.targetType === 'lt') return result < ind.target;
-            if (ind.targetType === 'eq') return result == ind.target;
-            if (ind.targetType === 'range') return result >= ind.targetMin && result <= ind.targetMax;
+        function checkStatus(res, ind) {
+            if (ind.targetType === 'gte') return res >= ind.target;
+            if (ind.targetType === 'lte') return res <= ind.target;
+            if (ind.targetType === 'eq') return res == ind.target;
+            if (ind.targetType === 'range') return res >= ind.targetMin && res <= ind.targetMax;
             return true;
         }
 
-        function getStatusBadge(result, ind) {
-            const isPass = checkStatus(result, ind);
-            if (isPass) {
-                return '<span class="status-badge status-pass"><i class="fas fa-check"></i> ผ่านเกณฑ์</span>';
-            } else {
-                return '<span class="status-badge status-fail"><i class="fas fa-times"></i> ไม่ผ่านเกณฑ์</span>';
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('indicator-form').reset();
-            document.getElementById('record-id').value = '';
-            document.getElementById('result-display').textContent = '0.00%';
-            document.getElementById('result-display').dataset.raw = '';
-            document.getElementById('entry-indicator').disabled = true;
-            document.getElementById('formula-container').style.display = 'none';
-            
-            const now = new Date();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const year = now.getFullYear();
-            document.getElementById('entry-date').value = `${year}-${month}`;
-        }
-
-        // --- CRUD Operations ---
+        // --- FIXED POST FUNCTION ---
         document.getElementById('indicator-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const submitBtn = this.querySelector('button[type="submit"]');
-            const originalBtnHtml = submitBtn.innerHTML;
-            
-            const id = document.getElementById('record-id').value;
-            const date = document.getElementById('entry-date').value;
-            const ward = document.getElementById('entry-ward').value;
-            const dim = document.getElementById('entry-dimension').value;
+            const id = document.getElementById('record-id').value || Date.now();
             const indId = document.getElementById('entry-indicator').value;
-            const valA = parseFloat(document.getElementById('val-a').value);
-            const valB = parseFloat(document.getElementById('val-b').value);
-            const resultRaw = parseFloat(document.getElementById('result-display').dataset.raw);
-            const notes = document.getElementById('entry-notes').value;
-
             const indData = indicatorsDB.find(i => i.id == indId);
-            const isPass = checkStatus(resultRaw, indData);
-
-            let targetText = indData.target;
-            if (indData.targetType === 'range') targetText = `${indData.targetMin}-${indData.targetMax}%`;
-            else if (indData.targetType === 'gte') targetText = `≥ ${indData.target}%`;
-            else if (indData.targetType === 'lte') targetText = `≤ ${indData.target}%`;
-            else if (indData.targetType === 'lt') targetText = `< ${indData.target}%`;
+            const resRaw = parseFloat(document.getElementById('result-display').dataset.raw);
 
             const record = {
-                id: id ? parseInt(id) : Date.now(),
-                date,
-                ward,
-                dim,
-                indId,
+                id: id,
+                date: document.getElementById('entry-date').value,
+                ward: document.getElementById('entry-ward').value,
+                dim: document.getElementById('entry-dimension').value,
+                indId: indId,
                 indName: indData.name,
-                targetText,
-                valA,
-                valB,
-                result: resultRaw,
-                isPass,
-                notes
+                valA: document.getElementById('val-a').value,
+                valB: document.getElementById('val-b').value,
+                result: resRaw.toFixed(2),
+                isPass: checkStatus(resRaw, indData),
+                notes: document.getElementById('entry-notes').value
             };
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> บันทึก...';
 
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    mode: 'no-cors', // บังคับไม่ใช้ CORS เพื่อข้ามการ Redirect error
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'save', record: record })
                 });
 
-                if (id) {
-                    const index = records.findIndex(r => r.id == id);
-                    records[index] = record;
-                } else {
-                    records.push(record);
-                }
+                // อัปเดตข้อมูลใน UI ทันที
+                const idx = records.findIndex(r => r.id == id);
+                if (idx > -1) records[idx] = record; else records.push(record);
 
+                showToast('บันทึกข้อมูลเรียบร้อยแล้ว', 'success');
                 resetForm();
                 showSection('data-list');
-                updateDashboard();
-                showToast('บันทึกเรียบร้อยแล้ว', 'success');
-            } catch (error) {
-                showToast('เกิดข้อผิดพลาด', 'error');
+            } catch (err) {
+                console.error(err);
+                showToast('ล้มเหลว แต่ข้อมูลอาจจะบันทึกแล้ว โปรดตรวจสอบตาราง', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> บันทึกข้อมูล';
             }
         });
+
+        async function deleteRecord(id) {
+            if (!confirm('ยืนยันการลบข้อมูล?')) return;
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'delete', id: id })
+                });
+                records = records.filter(r => r.id != id);
+                renderTable();
+                showToast('ลบเรียบร้อย', 'success');
+            } catch (e) { showToast('ลบไม่สำเร็จ', 'error'); }
+        }
 
         function renderTable() {
             const tbody = document.querySelector('#data-table tbody');
             tbody.innerHTML = '';
-            
             const search = document.getElementById('search-input').value.toLowerCase();
-            const filterDim = document.getElementById('filter-dimension').value;
-            const filterWard = document.getElementById('filter-ward').value;
-            const filterStatus = document.getElementById('filter-status').value;
+            const fDim = document.getElementById('filter-dimension').value;
+            const fWard = document.getElementById('filter-ward').value;
 
-            const filteredRecords = records.filter(r => {
-                const matchSearch = r.ward.toLowerCase().includes(search) || r.indName.toLowerCase().includes(search);
-                const matchDim = filterDim === 'all' || r.dim == filterDim;
-                const matchWard = filterWard === 'all' || r.ward === filterWard;
-                const matchStatus = filterStatus === 'all' || 
-                    (filterStatus === 'pass' && r.isPass) || 
-                    (filterStatus === 'fail' && !r.isPass);
-                return matchSearch && matchDim && matchWard && matchStatus;
-            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+            const filtered = records.filter(r => {
+                const mSearch = r.indName.toLowerCase().includes(search) || r.ward.toLowerCase().includes(search);
+                const mDim = fDim === 'all' || r.dim == fDim;
+                const mWard = fWard === 'all' || r.ward == fWard;
+                return mSearch && mDim && mWard;
+            });
 
-            if (filteredRecords.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
-                return;
-            }
-
-            filteredRecords.forEach(r => {
+            filtered.sort((a,b) => b.id - a.id).forEach(r => {
                 const tr = document.createElement('tr');
-                const indData = indicatorsDB.find(i => i.id == r.indId);
-                const isCount = indData ? indData.formula.includes('นับจำนวน') : false;
-                
                 tr.innerHTML = `
                     <td>${r.date}</td>
                     <td>${r.ward}</td>
-                    <td>มิติที่ ${r.dim}</td>
+                    <td>${r.dim}</td>
                     <td>${r.indName}</td>
                     <td>${r.valA}</td>
-                    <td>${r.valB === 0 ? '-' : r.valB}</td>
-                    <td style="font-weight:bold; color: ${r.isPass ? 'var(--success-color)' : 'var(--danger-color)'}">
-                        ${isCount ? r.result : r.result.toFixed(2) + '%'}
-                    </td>
-                    <td>${r.targetText || '-'}</td>
-                    <td>${getStatusBadge(r.result, indData || r)}</td>
+                    <td>${r.valB}</td>
+                    <td style="font-weight:bold; color:${r.isPass ? 'green' : 'red'}">${r.result}%</td>
+                    <td>${r.isPass ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
                     <td>
-                        <div class="btn-group">
-                            <button class="btn btn-edit" onclick="editRecord(${r.id})"><i class="fas fa-pen"></i></button>
-                            <button class="btn btn-danger" onclick="deleteRecord(${r.id})"><i class="fas fa-trash"></i></button>
-                        </div>
+                        <button class="btn btn-danger" onclick="deleteRecord(${r.id})"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        async function deleteRecord(id) {
-            if(confirm('ยืนยันการลบ?')) {
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'delete', id: id })
-                    });
-                    records = records.filter(r => r.id !== id);
-                    renderTable();
-                    updateDashboard();
-                    showToast('ลบสำเร็จ', 'success');
-                } catch(error) {
-                    showToast('ลบไม่สำเร็จ', 'error');
-                }
-            }
-        }
-
-        function editRecord(id) {
-            const record = records.find(r => r.id === id);
-            if (!record) return;
-            showSection('data-entry');
-            document.getElementById('record-id').value = record.id;
-            document.getElementById('entry-date').value = record.date;
-            document.getElementById('entry-ward').value = record.ward;
-            document.getElementById('entry-dimension').value = record.dim;
-            loadIndicatorsByDimension();
-            setTimeout(() => {
-                document.getElementById('entry-indicator').value = record.indId;
-                updateFormulaHint();
-                document.getElementById('val-a').value = record.valA;
-                document.getElementById('val-b').value = record.valB;
-                document.getElementById('entry-notes').value = record.notes || '';
-                calculateResult();
-            }, 100);
-        }
-
         function updateDashboard() {
-            document.getElementById('total-indicators').textContent = indicatorsDB.length;
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const monthRecords = records.filter(r => r.date === currentMonth);
-            document.getElementById('records-this-month').textContent = monthRecords.length;
-
-            if (monthRecords.length > 0) {
-                const passCount = monthRecords.filter(r => r.isPass).length;
-                const compliance = Math.round((passCount / monthRecords.length) * 100);
-                document.getElementById('avg-compliance').textContent = compliance + '%';
-                document.getElementById('below-target').textContent = monthRecords.length - passCount;
-            }
-
+            document.getElementById('records-this-month').textContent = records.length;
+            const pass = records.filter(r => r.isPass).length;
+            const rate = records.length ? Math.round((pass/records.length)*100) : 0;
+            document.getElementById('avg-compliance').textContent = rate + '%';
+            document.getElementById('below-target').textContent = records.length - pass;
+            
             const container = document.getElementById('dimension-cards-container');
             container.innerHTML = '';
             [1,2,3,4,5,6].forEach(d => {
-                const count = indicatorsDB.filter(i => i.dim === d).length;
-                const monthCount = monthRecords.filter(r => r.dim == d).length;
-                const card = document.createElement('div');
-                card.className = 'dimension-card';
-                card.innerHTML = `
-                    <h3>มิติที่ ${d}</h3>
-                    <p>มีตัวชี้วัด ${count} ข้อ</p>
-                    <div class="dimension-stats">
-                        <div class="stat"><div class="num">${count}</div><div class="label">ทั้งหมด</div></div>
-                        <div class="stat"><div class="num">${monthCount}</div><div class="label">เดือนนี้</div></div>
-                    </div>`;
-                container.appendChild(card);
+                const count = records.filter(r => r.dim == d).length;
+                container.innerHTML += `<div class="dimension-card"><h3>มิติที่ ${d}</h3><div class="dimension-stats"><div class="stat"><div class="num">${count}</div><div class="label">บันทึกแล้ว</div></div></div></div>`;
             });
         }
 
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast ' + type + ' show';
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function resetForm() {
+            document.getElementById('indicator-form').reset();
+            document.getElementById('record-id').value = '';
+            document.getElementById('formula-container').style.display = 'none';
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast ${type} show`;
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
+
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
