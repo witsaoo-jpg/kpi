@@ -140,15 +140,27 @@ function logout() {
     }
 }
 
-// ฟังก์ชันดึงข้อมูลจาก Google Sheets (แก้ปัญหารูปแบบวันที่แล้ว)
+// ฟังก์ชันดึงข้อมูลจาก Google Sheets (เพิ่มระบบ Cache ลดความหน่วง)
 async function loadDataFromSheet() {
-    showToast('กำลังโหลดข้อมูลจากฐานข้อมูล...', 'info');
+    // 1. ดึงข้อมูลเก่าที่เคยจำไว้ในเครื่อง (Cache) มาแสดงผลทันที (ไม่หน่วง)
+    const cachedData = localStorage.getItem('nursingRecordsCache');
+    if (cachedData) {
+        records = JSON.parse(cachedData);
+        updateDashboard();
+        if(!document.getElementById('data-list').classList.contains('hidden')) {
+            renderTable();
+        }
+    }
+
+    // 2. แจ้งเตือนสถานะการดึงข้อมูลใหม่
+    showToast(cachedData ? 'กำลังซิงค์ข้อมูลล่าสุดจากระบบ...' : 'กำลังโหลดข้อมูลจากฐานข้อมูล...', 'info');
+    
     try {
+        // 3. แอบวิ่งไปดึงข้อมูลใหม่จาก Google Sheets อยู่เบื้องหลัง
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
         
         records = data.map(r => {
-            // แปลงรูปแบบวันที่จาก Google Sheets ให้กลับมาเป็น YYYY-MM
             let formattedDate = r.date;
             if (formattedDate && String(formattedDate).includes('T')) {
                 const d = new Date(formattedDate);
@@ -173,14 +185,25 @@ async function loadDataFromSheet() {
             };
         });
         
+        // 4. เซฟข้อมูลชุดใหม่ล่าสุดลง Cache ทับของเก่า
+        localStorage.setItem('nursingRecordsCache', JSON.stringify(records));
+        
+        // 5. อัปเดตหน้าจอด้วยข้อมูลใหม่
         updateDashboard();
-        if(document.getElementById('data-list').classList.contains('hidden') === false) {
+        if(!document.getElementById('data-list').classList.contains('hidden')) {
             renderTable();
         }
-        showToast('โหลดข้อมูลสำเร็จ', 'success');
+        
+        showToast(cachedData ? 'อัปเดตข้อมูลล่าสุดเรียบร้อย' : 'โหลดข้อมูลสำเร็จ', 'success');
+        
     } catch (error) {
         console.error(error);
-        showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+        // ถ้าเน็ตหลุด หรือ Sheets มีปัญหา ก็ยังมีข้อมูลเก่าให้ดู
+        if (cachedData) {
+            showToast('แสดงผลด้วยข้อมูลออฟไลน์ (เชื่อมต่อเซิร์ฟเวอร์ไม่ได้)', 'warning');
+        } else {
+            showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+        }
     }
 }
 
