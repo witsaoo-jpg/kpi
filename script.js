@@ -1,5 +1,4 @@
 // --- Authentication ---
-// กำหนดชื่อผู้ใช้และรหัสผ่านสำหรับเข้าระบบ (สามารถแก้ไขได้ตามต้องการ)
 const SECRET_USERNAME = "admin";
 const SECRET_PASSWORD = "1234";
 
@@ -79,6 +78,10 @@ const indicatorsDB = [
 // --- State Management ---
 let records = [];
 
+// ตัวแปรสำหรับเก็บ Chart Instance
+let dimBarChartInstance = null;
+let passDoughnutChartInstance = null;
+
 // URL จาก Apps Script
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBpnbe9Nb9ti4Ei--IhORGJu6DHX4EEjhIGSu0TvNIuZ_eMTFQEwq3JFxBS_pQeTys/exec';
 
@@ -109,10 +112,7 @@ function checkLogin() {
     const errorMsg = document.getElementById('login-error');
     
     if (inputUser === SECRET_USERNAME && inputPwd === SECRET_PASSWORD) {
-        // ถ้ารหัสถูก ให้จำไว้ในเครื่อง
         localStorage.setItem('isLoggedIn', 'true');
-        
-        // ซ่อนหน้าจอ Login อย่างนุ่มนวล
         const overlay = document.getElementById('login-overlay');
         overlay.style.opacity = '0';
         setTimeout(() => { 
@@ -120,7 +120,6 @@ function checkLogin() {
             showToast('เข้าสู่ระบบสำเร็จ', 'success');
         }, 400);
     } else {
-        // ถ้าผิด
         errorMsg.style.display = 'block';
         document.getElementById('login-password').value = ''; 
         setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
@@ -140,23 +139,41 @@ function logout() {
     }
 }
 
-// ฟังก์ชันดึงข้อมูลจาก Google Sheets (เพิ่มระบบ Cache ลดความหน่วง)
+// สร้างตัวเลือกเดือนลงใน Dropdown ของ Dashboard
+function populateDashMonths() {
+    const select = document.getElementById('dash-filter-month');
+    if (!select) return;
+    
+    const months = [...new Set(records.map(r => r.date))].sort().reverse();
+    
+    select.innerHTML = '<option value="all">ทุกเดือน</option>';
+    months.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m;
+        option.textContent = m; 
+        select.appendChild(option);
+    });
+
+    if (months.length > 0) {
+        select.value = months[0];
+    }
+}
+
+// ฟังก์ชันดึงข้อมูลจาก Google Sheets (เพิ่มระบบ Cache)
 async function loadDataFromSheet() {
-    // 1. ดึงข้อมูลเก่าที่เคยจำไว้ในเครื่อง (Cache) มาแสดงผลทันที (ไม่หน่วง)
     const cachedData = localStorage.getItem('nursingRecordsCache');
     if (cachedData) {
         records = JSON.parse(cachedData);
+        populateDashMonths();
         updateDashboard();
         if(!document.getElementById('data-list').classList.contains('hidden')) {
             renderTable();
         }
     }
 
-    // 2. แจ้งเตือนสถานะการดึงข้อมูลใหม่
     showToast(cachedData ? 'กำลังซิงค์ข้อมูลล่าสุดจากระบบ...' : 'กำลังโหลดข้อมูลจากฐานข้อมูล...', 'info');
     
     try {
-        // 3. แอบวิ่งไปดึงข้อมูลใหม่จาก Google Sheets อยู่เบื้องหลัง
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
         
@@ -185,11 +202,11 @@ async function loadDataFromSheet() {
             };
         });
         
-        // 4. เซฟข้อมูลชุดใหม่ล่าสุดลง Cache ทับของเก่า
         localStorage.setItem('nursingRecordsCache', JSON.stringify(records));
         
-        // 5. อัปเดตหน้าจอด้วยข้อมูลใหม่
+        populateDashMonths();
         updateDashboard();
+        
         if(!document.getElementById('data-list').classList.contains('hidden')) {
             renderTable();
         }
@@ -198,7 +215,6 @@ async function loadDataFromSheet() {
         
     } catch (error) {
         console.error(error);
-        // ถ้าเน็ตหลุด หรือ Sheets มีปัญหา ก็ยังมีข้อมูลเก่าให้ดู
         if (cachedData) {
             showToast('แสดงผลด้วยข้อมูลออฟไลน์ (เชื่อมต่อเซิร์ฟเวอร์ไม่ได้)', 'warning');
         } else {
@@ -243,6 +259,8 @@ function populateWards() {
 function populateWardFilter() {
     const select = document.getElementById('filter-ward');
     const reportSelect = document.getElementById('report-ward');
+    const dashSelect = document.getElementById('dash-filter-ward'); 
+
     wards.forEach(ward => {
         const option1 = document.createElement('option');
         option1.value = ward;
@@ -253,6 +271,13 @@ function populateWardFilter() {
         option2.value = ward;
         option2.textContent = ward;
         reportSelect.appendChild(option2);
+
+        if (dashSelect) {
+            const option3 = document.createElement('option');
+            option3.value = ward;
+            option3.textContent = ward;
+            dashSelect.appendChild(option3);
+        }
     });
 }
 
@@ -420,7 +445,6 @@ document.getElementById('indicator-form').addEventListener('submit', async funct
     showToast('กำลังบันทึกข้อมูลไปยัง Google Sheets...', 'info');
 
     try {
-        // ดัก Error จาก Redirect ด้วย .catch()
         await fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify({ action: 'save', record: record })
@@ -428,7 +452,6 @@ document.getElementById('indicator-form').addEventListener('submit', async funct
             console.warn('มองข้าม Error จาก Redirect:', err);
         });
 
-        // อัปเดตข้อมูลในระบบ
         if (id) {
             const index = records.findIndex(r => r.id == id);
             if(index !== -1) records[index] = record;
@@ -612,7 +635,6 @@ async function deleteRecord(id) {
     if(confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่?')) {
         showToast('กำลังลบข้อมูลจากระบบ...', 'info');
         try {
-            // ดัก Error จาก Redirect ด้วย .catch()
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'delete', id: id })
@@ -635,23 +657,29 @@ function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
 
-// --- Dashboard ---
+// --- Dashboard & Charts ---
 function updateDashboard() {
+    const monthFilter = document.getElementById('dash-filter-month') ? document.getElementById('dash-filter-month').value : 'all';
+    const wardFilter = document.getElementById('dash-filter-ward') ? document.getElementById('dash-filter-ward').value : 'all';
+
+    let dashRecords = records;
+    if (monthFilter !== 'all') dashRecords = dashRecords.filter(r => r.date === monthFilter);
+    if (wardFilter !== 'all') dashRecords = dashRecords.filter(r => r.ward === wardFilter);
+
     document.getElementById('total-indicators').textContent = indicatorsDB.length;
+    document.getElementById('records-this-month').textContent = dashRecords.length;
+
+    let passCount = 0;
+    let failCount = 0;
     
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    const monthRecords = records.filter(r => r.date === currentMonth);
-    document.getElementById('records-this-month').textContent = monthRecords.length;
-
-    if (monthRecords.length > 0) {
-        let passCount = 0;
-        monthRecords.forEach(r => {
+    if (dashRecords.length > 0) {
+        dashRecords.forEach(r => {
             if (r.isPass) passCount++;
+            else failCount++;
         });
-
-        const compliance = Math.round((passCount / monthRecords.length) * 100);
+        const compliance = Math.round((passCount / dashRecords.length) * 100);
         document.getElementById('avg-compliance').textContent = compliance + '%';
-        document.getElementById('below-target').textContent = monthRecords.length - passCount;
+        document.getElementById('below-target').textContent = failCount;
     } else {
         document.getElementById('avg-compliance').textContent = '0%';
         document.getElementById('below-target').textContent = '0';
@@ -669,28 +697,99 @@ function updateDashboard() {
         {id: 6, name: "ผลลัพธ์ด้านการบริการพยาบาล", color: "#388e3c", icon: "fa-heartbeat"}
     ];
 
+    let dimPassRates = []; 
+    let dimLabels = [];
+
     dims.forEach(d => {
         const count = indicatorsDB.filter(i => i.dim === d.id).length;
-        const monthCount = monthRecords.filter(r => r.dim == d.id).length;
+        const dimRecords = dashRecords.filter(r => r.dim == d.id);
+        const recordedCount = dimRecords.length;
+        
+        const dimPassCount = dimRecords.filter(r => r.isPass).length;
+        const dimPassRate = recordedCount > 0 ? Math.round((dimPassCount / recordedCount) * 100) : 0;
+        
+        dimPassRates.push(dimPassRate);
+        dimLabels.push(`มิติที่ ${d.id}`);
+
         const card = document.createElement('div');
         card.className = 'dimension-card';
         card.style.borderTopColor = d.color;
         card.innerHTML = `
             <h3><i class="fas ${d.icon}" style="color: ${d.color};"></i> ${d.name}</h3>
-            <p>มีตัวชี้วัด ${count} ข้อ</p>
-            <div class="dimension-stats">
+            <p style="color: #78909c; font-size: 0.85rem; margin-bottom: 10px;">มีตัวชี้วัด ${count} ข้อ</p>
+            <div class="dimension-stats" style="margin-bottom: 10px;">
                 <div class="stat">
                     <div class="num">${count}</div>
-                    <div class="label">ตัวชี้วัด</div>
+                    <div class="label">รวม</div>
                 </div>
                 <div class="stat">
-                    <div class="num">${monthCount}</div>
-                    <div class="label">บันทึกเดือนนี้</div>
+                    <div class="num" style="color: ${recordedCount > 0 ? 'var(--primary-color)' : '#999'}">${recordedCount}</div>
+                    <div class="label">บันทึกแล้ว</div>
                 </div>
+            </div>
+            <div style="background: #eee; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: ${dimPassRate}%; background: ${d.color}; height: 100%; transition: width 0.5s ease;"></div>
+            </div>
+            <div style="text-align: right; font-size: 0.8rem; color: #546e7a; margin-top: 5px; font-weight: 500;">
+                ผ่านเกณฑ์ ${dimPassRate}%
             </div>
         `;
         container.appendChild(card);
     });
+
+    renderCharts(dimLabels, dimPassRates, passCount, failCount);
+}
+
+function renderCharts(dimLabels, dimPassRates, passCount, failCount) {
+    const ctxBar = document.getElementById('dimBarChart');
+    if (ctxBar) {
+        if (dimBarChartInstance) dimBarChartInstance.destroy(); 
+        dimBarChartInstance = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: dimLabels,
+                datasets: [{
+                    label: 'ร้อยละการผ่านเกณฑ์ (%)',
+                    data: dimPassRates,
+                    backgroundColor: ['#00897b', '#0288d1', '#fbc02d', '#7b1fa2', '#e64a19', '#388e3c'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    const ctxDoughnut = document.getElementById('passDoughnutChart');
+    if (ctxDoughnut) {
+        if (passDoughnutChartInstance) passDoughnutChartInstance.destroy();
+        passDoughnutChartInstance = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['ผ่านเกณฑ์', 'ไม่ผ่านเกณฑ์'],
+                datasets: [{
+                    data: [passCount, failCount],
+                    backgroundColor: ['#4caf50', '#f44336'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
 }
 
 // --- Reports ---
@@ -718,7 +817,6 @@ function generateReport() {
         return;
     }
 
-    // Group by dimension
     const byDim = {};
     filteredRecords.forEach(r => {
         if (!byDim[r.dim]) byDim[r.dim] = [];
@@ -837,7 +935,6 @@ function exportToCSV() {
 function downloadPDF() {
     const content = document.getElementById('report-content');
     
-    // เช็คก่อนว่ามีข้อมูลรายงานให้แคปไหม
     if (!content.innerHTML.trim() || content.innerHTML.includes('ยังไม่มีข้อมูลสำหรับแสดงรายงาน')) {
         showToast('ไม่มีข้อมูลสำหรับสร้าง PDF', 'error');
         return;
